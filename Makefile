@@ -30,7 +30,9 @@
 
 DEVICE     ?= atmega328p
 CLOCK      = 16000000
-PROGRAMMER ?= -c avrisp2 -P usb
+# please fill your /dev/tty below
+TTY         = /dev/tty.usbmodemfa131
+PROGRAMMER ?= -c arduino -P $(TTY)
 OBJECTS    = main.o motion_control.o gcode.o spindle_control.o coolant_control.o serial.o \
              protocol.o stepper.o eeprom.o settings.o planner.o nuts_bolts.o limits.o \
              print.o report.o
@@ -39,9 +41,12 @@ FUSES      = -U hfuse:w:0xd2:m -U lfuse:w:0xff:m
 # update that line with this when programmer is back up:
 # FUSES      = -U hfuse:w:0xd7:m -U lfuse:w:0xff:m
 
+# Uncomment line below to use Arduino.app avrdude under MacOS X
+#OSX_OPTION = -C /Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/etc/avrdude.conf
+
 # Tune the lines below only if you know what you are doing:
 
-AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE) -B 10 -F
+AVRDUDE = avrdude $(PROGRAMMER) -p $(DEVICE) -B 10 -F $(OSX_OPTION)
 COMPILE = avr-gcc -Wall -Os -DF_CPU=$(CLOCK) -mmcu=$(DEVICE) -I. -ffunction-sections
 
 # symbolic targets:
